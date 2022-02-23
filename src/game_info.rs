@@ -1,5 +1,6 @@
 use std::{collections::HashMap, fs};
 use serde::{Serialize, Deserialize};
+use serde_json::*;
 
 use crate::{Team, Player};
 
@@ -22,11 +23,30 @@ impl GameData {
         let encoded = serde_json::to_string(&self).unwrap();
         fs::write("league_data.txt", &encoded).unwrap();
     }
+
+    
+
+    pub fn set_player_team(&mut self, player_id: u64, new_team: u64) {
+        let mut p = self.players.get_mut(&player_id).unwrap();
+        if let Some(team) = self.teams.get_mut(&p.team) {
+            if let Some(position) = team.players.iter().position(|&r| &r == &p.id) {
+                team.players.remove(position);
+            }
+        }
+
+        if let Some(team) = self.teams.get_mut(&new_team) {
+            if let None = team.players.iter().position(|&r| &r == &p.id) {
+                team.players.push(p.id);
+            }
+        }
+        p.id = new_team;
+    }
 }
 
 
 pub fn new_from_file() -> GameData {
     let file = fs::read_to_string("league_data.txt").unwrap();
+    println!("{}", file);
     let decoded: GameData = serde_json::from_str(&file).unwrap();
     decoded
 }

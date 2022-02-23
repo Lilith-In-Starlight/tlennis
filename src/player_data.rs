@@ -32,6 +32,21 @@ pub struct Player {
     pub name: String,
     pub strength: f32,
     pub speed: f32,
+    #[serde(default)]
+    pub modifiers: Vec<String>,
+}
+
+impl Default for Player {
+    fn default() -> Self {
+        Self {
+            id: 0,
+            team: 0,
+            name: generate_name(),
+            strength: rand::thread_rng().gen_range(0.0..6.0),
+            speed: rand::thread_rng().gen_range(0.0..6.0),
+            modifiers: Vec::new(),
+        }
+    }
 }
 
 pub fn generate_name() -> String {
@@ -71,9 +86,7 @@ impl Player {
         let p = Player {
             id: id,
             team: team,
-            name: generate_name(),
-            strength: rand::thread_rng().gen_range(0.0..6.0),
-            speed: rand::thread_rng().gen_range(0.0..6.0),
+            ..Default::default()
         };
         game_data.players.insert(id, p.clone());
 

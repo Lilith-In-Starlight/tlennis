@@ -14,6 +14,8 @@ pub struct Team {
     pub wins: i64,
     #[serde(default)]
     pub losses: i64,
+    #[serde(default)]
+    pub modifiers: Vec<String>,
 }
 
 impl Default for Team {
@@ -26,6 +28,7 @@ impl Default for Team {
             players: Vec::new(),
             wins: 0,
             losses: 0, 
+            modifiers: Vec::new(), 
        }
     }
 }
@@ -38,7 +41,6 @@ impl Team {
             name: name.to_string(),
             icon: icon,
             location: location.to_string(),
-            players: Vec::new(),
             ..Default::default()
         };
         game_data.teams.insert(id, t.clone());
