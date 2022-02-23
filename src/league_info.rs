@@ -1,6 +1,5 @@
 use std::{collections::HashMap, fs, path::Path};
 use serde::{Serialize, Deserialize};
-use serde_json::*;
 
 use crate::{Team, Player};
 
