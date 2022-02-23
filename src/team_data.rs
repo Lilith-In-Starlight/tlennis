@@ -1,7 +1,7 @@
 use rand::Rng;
 use serde::{Serialize, Deserialize};
 
-use crate::{GameData, Player};
+use crate::{LeagueData, Player};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Team {
@@ -34,7 +34,7 @@ impl Default for Team {
 }
 
 impl Team {
-    pub fn new(game_data: &mut GameData, name: &str, icon: char, location: &str) -> u64 {
+    pub fn new(game_data: &mut LeagueData, name: &str, icon: char, location: &str) -> u64 {
         let id: u64 = rand::thread_rng().gen();
         let t = Team {
             id: id,

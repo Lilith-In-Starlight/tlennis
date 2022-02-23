@@ -5,15 +5,15 @@ use serde_json::*;
 use crate::{Team, Player};
 
 #[derive(Serialize, Deserialize)]
-pub struct GameData {
+pub struct LeagueData {
     pub teams: HashMap<u64, Team>,
     pub players: HashMap<u64, Player>,
 }
 
 
-impl GameData {
-    pub fn new() -> GameData {
-        GameData {
+impl LeagueData {
+    pub fn new() -> LeagueData {
+     LeagueData {
             teams: HashMap::new(),
             players: HashMap::new(),
         }
@@ -44,9 +44,9 @@ impl GameData {
 }
 
 
-pub fn new_from_file() -> GameData {
+pub fn new_from_file() -> LeagueData {
     let file = fs::read_to_string("league_data.txt").unwrap();
     println!("{}", file);
-    let decoded: GameData = serde_json::from_str(&file).unwrap();
+    let decoded: LeagueData = serde_json::from_str(&file).unwrap();
     decoded
 }

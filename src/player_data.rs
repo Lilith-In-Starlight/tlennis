@@ -3,7 +3,7 @@ use once_cell::sync::Lazy;
 use rand::{Rng};
 use serde::{Serialize, Deserialize};
 
-use crate::GameData;
+use crate::LeagueData;
 
 
 static NAME_LIST: Lazy<Vec<&str>> = Lazy::new(||{
@@ -81,7 +81,7 @@ pub fn generate_name() -> String {
 }
 
 impl Player {
-    pub fn new(game_data: &mut GameData, team: u64) -> u64 {
+    pub fn new(game_data: &mut LeagueData, team: u64) -> u64 {
         let id: u64 = rand::thread_rng().gen();
         let p = Player {
             id: id,
