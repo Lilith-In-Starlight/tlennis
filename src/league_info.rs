@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs};
+use std::{collections::HashMap, fs, path::Path};
 use serde::{Serialize, Deserialize};
 use serde_json::*;
 
@@ -45,8 +45,19 @@ impl LeagueData {
 
 
 pub fn new_from_file() -> LeagueData {
-    let file = fs::read_to_string("league_data.txt").unwrap();
-    println!("{}", file);
-    let decoded: LeagueData = serde_json::from_str(&file).unwrap();
-    decoded
+    if Path::new("league_data.txt").exists() {
+        let file = fs::read_to_string("league_data.txt").unwrap();
+        println!("{}", file);
+        let decoded: LeagueData = serde_json::from_str(&file).unwrap();
+        decoded
+    } else {
+        let mut default_league = LeagueData::new();    
+        Team::new(&mut default_league, "Iterators", '🎲', "Rain World");
+        Team::new(&mut default_league, "Anglerfish", '🐟', "Dark Bramble");
+        Team::new(&mut default_league, "Hobbits", '🧒', "New Zealand");
+        Team::new(&mut default_league, "Pop Cats", '😺', "Nyan City");
+        Team::new(&mut default_league, "Goats", '🐐', "Underground");
+        Team::new(&mut default_league, "Astrologists", '♑', "Paradox Space");
+        default_league
+    }
 }
