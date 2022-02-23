@@ -48,4 +48,8 @@ impl Team {
 
         id
     }
+
+    pub fn fullname(&self) -> String {
+        format!("{} {}", &self.location, &self.name)
+    }
 }

@@ -27,7 +27,6 @@ impl GameData {
 
 pub fn new_from_file() -> GameData {
     let file = fs::read_to_string("league_data.txt").unwrap();
-    println!("{}", file);
     let decoded: GameData = serde_json::from_str(&file).unwrap();
     decoded
 }
