@@ -1,80 +1,34 @@
-use std::{collections::HashMap};
+use std::{collections::HashMap, fs};
+use serde::{Serialize, Deserialize};
+use serde_json::{Result, Value};
 
-use rand::{Rng};
+use crate::{Team, Player};
 
-#[derive(Clone)]
-pub struct Player {
-    pub id: u64,
-    pub team: u64,
-    pub name: String,
-    pub strength: f32,
-    pub speed: f32,
-}
-
-#[derive(Clone)]
-pub struct Team {
-    pub id: u64,
-    pub icon: char,
-    pub name: String,
-    pub location: String,
-    pub players: Vec<u64>,
+#[derive(Serialize, Deserialize)]
+pub struct GameData {
+    pub teams: HashMap<u64, Team>,
+    pub players: HashMap<u64, Player>,
 }
 
 
-pub fn generate_name(name_list: &Vec<&str>, surname_list: &Vec<&str>, general_list: &Vec<&str>) -> String {
-    let index_name = rand::thread_rng().gen_range(0..(name_list.len() + general_list.len()));
-    let index_surname = rand::thread_rng().gen_range(0..(surname_list.len() + general_list.len()));
-    let mut _name = "".to_string();
-    if index_name >= name_list.len() {
-        _name += general_list[index_name - name_list.len()];
-    } else {
-        _name += name_list[index_name];
-    }
-    _name += " ";
-    if index_surname >= surname_list.len() {
-        _name += general_list[index_surname - surname_list.len()];
-    } else {
-        _name += surname_list[index_surname];
-    }
-    // println!("{}", _name);
-    _name
-}
-
-impl Player {
-    pub fn new(players: &mut HashMap<u64, Player>, teams: &mut HashMap<u64, Team>, team: u64) -> u64 {
-        let id: u64 = rand::thread_rng().gen();
-        let p = Player {
-            id: id,
-            team: 0,
-            name: "Player Tennison".to_string(),
-            strength: 5.6,
-            speed: 6.5,
-        };
-        players.insert(id, p.clone());
-
-        if let Some(value) = teams.get_mut(&team) {
-            value.players.push(id);
+impl GameData {
+    pub fn new() -> GameData {
+        GameData {
+            teams: HashMap::new(),
+            players: HashMap::new(),
         }
+    }
 
-        id
+    pub fn save_as_file(&self) {
+        let encoded = serde_json::to_string(&self).unwrap();
+        fs::write("league_data.txt", &encoded).unwrap();
     }
 }
 
-impl Team {
-    pub fn new(teams: &mut HashMap<u64, Team>, players: &mut HashMap<u64, Player>, name: String, icon: char, location: String) -> u64 {
-        let id: u64 = rand::thread_rng().gen();
-        let t = Team {
-            id: id,
-            name: name,
-            icon: icon,
-            location: location,
-            players: Vec::new(),
-        };
-        teams.insert(id, t.clone());
-        for _ in 0..12 {
-            Player::new(players, teams, id);
-        }
 
-        id
-    }
+pub fn new_from_file() -> GameData {
+    let file = fs::read_to_string("league_data.txt").unwrap();
+    println!("{}", file);
+    let decoded: GameData = serde_json::from_str(&file).unwrap();
+    decoded
 }
