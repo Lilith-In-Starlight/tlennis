@@ -34,7 +34,7 @@ impl Default for Team {
 }
 
 impl Team {
-    pub fn new(game_data: &mut LeagueData, name: &str, icon: char, location: &str) -> u64 {
+    pub fn new(league_data: &mut LeagueData, name: &str, icon: char, location: &str) -> u64 {
         let id: u64 = rand::thread_rng().gen();
         let t = Team {
             id: id,
@@ -43,9 +43,9 @@ impl Team {
             location: location.to_string(),
             ..Default::default()
         };
-        game_data.teams.insert(id, t.clone());
+        league_data.teams.insert(id, t.clone());
         for _ in 0..12 {
-            Player::new(game_data, id);
+            Player::new(league_data, id);
         }
 
         id

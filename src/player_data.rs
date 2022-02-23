@@ -81,16 +81,16 @@ pub fn generate_name() -> String {
 }
 
 impl Player {
-    pub fn new(game_data: &mut LeagueData, team: u64) -> u64 {
+    pub fn new(league_data: &mut LeagueData, team: u64) -> u64 {
         let id: u64 = rand::thread_rng().gen();
         let p = Player {
             id: id,
             team: team,
             ..Default::default()
         };
-        game_data.players.insert(id, p.clone());
+        league_data.players.insert(id, p.clone());
 
-        if let Some(value) = game_data.teams.get_mut(&team) {
+        if let Some(value) = league_data.teams.get_mut(&team) {
             value.players.push(id);
         }
 
