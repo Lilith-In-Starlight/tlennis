@@ -70,7 +70,7 @@ impl Player {
         let id: u64 = rand::thread_rng().gen();
         let p = Player {
             id: id,
-            team: 0,
+            team: team,
             name: generate_name(),
             strength: rand::thread_rng().gen_range(0.0..6.0),
             speed: rand::thread_rng().gen_range(0.0..6.0),

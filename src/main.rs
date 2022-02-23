@@ -10,6 +10,6 @@ pub use team_data::Team;
 
 
 fn main() {
-    let mut game_data = game_info::new_from_file();
+    let mut game_data = GameData::new();
     game_data.save_as_file()
 }
