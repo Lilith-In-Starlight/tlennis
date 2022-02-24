@@ -42,13 +42,18 @@ impl LeagueData {
         }
         p.id = new_team;
     }
+
+    pub fn get_player_with_icon(&self , player_id: u64) -> String {
+        let p = &self.players[&player_id];
+        let t = &self.teams[&p.team].icon;
+        format!("{} {}", t, p.name)
+    }
 }
 
 
 pub fn new_from_file() -> LeagueData { // Loads a league from a file if the file exists, if not, it uses a default league
     if Path::new("league_data.txt").exists() {
         let file = fs::read_to_string("league_data.txt").unwrap();
-        println!("{}", file);
         let decoded: LeagueData = serde_json::from_str(&file).unwrap();
         decoded
     } else {
