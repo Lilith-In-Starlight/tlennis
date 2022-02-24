@@ -40,6 +40,6 @@ fn main() {
 
     loop {
         game.tick(&mut league_data);
-        sleep(time::Duration::from_millis(500));
+        sleep(time::Duration::from_millis(2500));
     }
 }

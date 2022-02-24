@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 console = "*"
 rand = "*"
+rand_xoshiro = "*"
 once_cell = "*"
 serde = {version = "*", features = ["derive"]}
 serde_json = "*"

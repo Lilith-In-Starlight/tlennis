@@ -1,7 +1,7 @@
 /* Games are the competitions between players, they are not serializable becaue games aren't saved as part of the league */
 
-use rand::Rng;
-
+use rand::{Rng, SeedableRng};
+use rand_xoshiro::Xoshiro256PlusPlus;
 use crate::LeagueData;
 
 pub struct Game {
@@ -36,44 +36,47 @@ impl Default for Game {
 
 impl Game {
     pub fn tick(&mut self, league_data: &mut LeagueData) {
+        let mut rng = Xoshiro256PlusPlus::from_entropy();
         if &self.ticker.len() > &0 { // If there's commentary, print it
             println!("{}", &self.ticker[0]);
             self.ticker.remove(0);
-        } else { // If there isn't, process the game
-            if !&self.started {
-                let served_id = league_data.teams[&self.home_team].players[rand::thread_rng().gen_range(0..2)].to_owned();
-                self.ticker.push(format!("Message about {} serving for the {}", league_data.players[&served_id].name, league_data.teams[&self.home_team].fullname()));
-                self.ball_in_home = !self.ball_in_home;
-                self.started = true;
-            } else {
-                // Which side of the team that hit, hit the ball
-                let left_or_right = rand::thread_rng().gen_range(0..2) as usize;
-                // Which team hit the ball (away or home)
-                let hitting_team_side:&mut Vec<usize> = if self.ball_in_home { &mut self.home_players } else { &mut self.away_players };
-                // Which team hit the ball (id)
-                let hitting_team_id:&u64 = if self.ball_in_home {&self.home_team} else {&self.away_team};
-                // Which player hit the ball (id)
-                let hitting_player_id = { // the ID of the player which hit
-                    let hitting_player_in_sides:usize  = hitting_team_side[left_or_right]; // team position of the player that hit
-                    let which_player_hit = league_data.teams[hitting_team_id].players[hitting_player_in_sides];
-                    which_player_hit
-                };
-                // Name of the player that hit the ball
-                let hitting_player_name = league_data.get_player_with_icon(hitting_player_id);
-                self.ticker.push(format!("Message about {} hitting the ball", hitting_player_name));
+        }
+        if !&self.started {
+            let served_id = league_data.teams[&self.home_team].players[rng.gen_range(0..100)%2].to_owned();
+            self.ticker.push(format!("Message about {} serving for the {}", league_data.players[&served_id].name, league_data.teams[&self.home_team].fullname()));
+            self.ball_in_home = !self.ball_in_home;
+            self.started = true;
+        } else {
+            // Which side of the team that hit, hit the ball
+            let left_or_right = rng.gen_range(0..100)%2 as usize;
+            // Which team hit the ball (away or home)
+            let hitting_team_side:&mut Vec<usize> = if self.ball_in_home { &mut self.home_players } else { &mut self.away_players };
+            // Which team hit the ball (id)
+            let hitting_team_id:&u64 = if self.ball_in_home {&self.home_team} else {&self.away_team};
+            // Which player hit the ball (id)
+            let hitting_player_id = { // the ID of the player which hit
+                let hitting_player_in_sides:usize  = hitting_team_side[left_or_right]; // team position of the player that hit
+                let which_player_hit = league_data.teams[hitting_team_id].players[hitting_player_in_sides];
+                which_player_hit
+            };
+            // Name of the player that hit the ball
+            let hitting_player_name = league_data.get_player_with_icon(hitting_player_id);
+            self.ticker.push(format!("Message about {} hitting the ball", hitting_player_name));
 
 
-                let hitting_chance: f32 = rand::thread_rng().gen_range(0.0..1.0);
-                if hitting_chance < 0.1 {
-                    self.ticker.push(format!("Message about {} scoring for their team", hitting_player_name));
+            let hitting_chance: f32 = rng.gen_range(0.0..1.0);
+            if hitting_chance < 0.1 {
+                self.ticker.push(format!("Message about {} scoring for their team", hitting_player_name));
 
-
-                    hitting_team_side[left_or_right] = (hitting_team_side[left_or_right] + 1) % 12;
+                hitting_team_side[left_or_right] = (hitting_team_side[left_or_right] + 1) % 12;
+                {
+                    let new_hitting_player = league_data.teams[hitting_team_id].players[hitting_team_side[left_or_right]];
+                    self.ticker.push(format!("Message about {} stepping up to the place", league_data.get_player_with_icon(new_hitting_player)));
                 }
-
-                
-                self.ball_in_home = !self.ball_in_home;
             }
+
+            
+            self.ball_in_home = !self.ball_in_home;
         }
     }
 }

@@ -12,6 +12,7 @@ pub struct LeagueData {
 }
 
 
+
 impl LeagueData {
     pub fn new() -> LeagueData {
      LeagueData {
