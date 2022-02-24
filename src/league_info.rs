@@ -1,3 +1,5 @@
+/* The league is the collecton of teams and players, and all their information */
+
 use std::{collections::HashMap, fs, path::Path};
 use serde::{Serialize, Deserialize};
 
@@ -18,14 +20,14 @@ impl LeagueData {
         }
     }
 
-    pub fn save_as_file(&self) {
+    pub fn save_as_file(&self) { // Saves the league as a file in JSON format
         let encoded = serde_json::to_string(&self).unwrap();
         fs::write("league_data.txt", &encoded).unwrap();
     }
 
     
 
-    pub fn set_player_team(&mut self, player_id: u64, new_team: u64) {
+    pub fn set_player_team(&mut self, player_id: u64, new_team: u64) { // Changes the team of a player
         let mut p = self.players.get_mut(&player_id).unwrap();
         if let Some(team) = self.teams.get_mut(&p.team) {
             if let Some(position) = team.players.iter().position(|&r| &r == &p.id) {
@@ -43,7 +45,7 @@ impl LeagueData {
 }
 
 
-pub fn new_from_file() -> LeagueData {
+pub fn new_from_file() -> LeagueData { // Loads a league from a file if the file exists, if not, it uses a default league
     if Path::new("league_data.txt").exists() {
         let file = fs::read_to_string("league_data.txt").unwrap();
         println!("{}", file);
