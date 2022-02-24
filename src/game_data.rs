@@ -13,8 +13,8 @@ pub struct Game {
     pub ball_in_home: bool, // which team will hit the ball || false => away; true => home ;; starts as true
     pub ticker: Vec<String>,
     pub started: bool, // false if serving is necessary ;; might rename
-    pub home_players: Vec<u64>,
-    pub away_players: Vec<u64>,
+    pub home_players: Vec<usize>,
+    pub away_players: Vec<usize>,
 }
 
 impl Default for Game {
@@ -49,17 +49,17 @@ impl Game {
                 // Which side of the team that hit, hit the ball
                 let left_or_right = rand::thread_rng().gen_range(0..2) as usize;
                 // Which team hit the ball (away or home)
-                let hitting_team_side:&mut Vec<u64> = if self.ball_in_home { &mut self.home_players } else { &mut self.away_players };
+                let hitting_team_side:&mut Vec<usize> = if self.ball_in_home { &mut self.home_players } else { &mut self.away_players };
                 // Which team hit the ball (id)
                 let hitting_team_id:&u64 = if self.ball_in_home {&self.home_team} else {&self.away_team};
                 // Which player hit the ball (id)
                 let hitting_player_id = { // the ID of the player which hit
-                    let hitting_player_in_sides:u64  = hitting_team_side[left_or_right]; // team position of the player that hit
-                    let which_player_hit = league_data.teams[hitting_team_id].players[hitting_player_in_sides as usize];
+                    let hitting_player_in_sides:usize  = hitting_team_side[left_or_right]; // team position of the player that hit
+                    let which_player_hit = league_data.teams[hitting_team_id].players[hitting_player_in_sides];
                     which_player_hit
                 };
                 // Name of the player that hit the ball
-                let hitting_player_name = league_data.get_player_with_icon(*hitting_team_id);
+                let hitting_player_name = league_data.get_player_with_icon(hitting_player_id);
                 self.ticker.push(format!("Message about {} hitting the ball", hitting_player_name));
 
 
