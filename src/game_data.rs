@@ -5,9 +5,9 @@ use rand_xoshiro::Xoshiro256PlusPlus;
 use crate::LeagueData;
 
 pub enum GameStates {
-    serving,
-    play,
-    ended,
+    Serving,
+    Play,
+    Ended,
 }
 pub struct Game {
     pub away_team: u64,
@@ -35,7 +35,7 @@ impl Default for Game {
             ticker: Vec::from(["Game start!".to_string()]),
             home_players: Vec::from([0, 1]),
             away_players: Vec::from([0, 1]),
-            game_state: GameStates::serving,
+            game_state: GameStates::Serving,
             solo_game: false,
         }
     }
@@ -49,13 +49,13 @@ impl Game {
             self.ticker.remove(0);
         }
         match self.game_state {
-            GameStates::serving => {
+            GameStates::Serving => {
                 let served_id = league_data.teams[&self.home_team].players[rng.gen_range(0..100)%2].to_owned();
-                self.ticker.push(format!("Message about {} serving for the {}", league_data.players[&served_id].name, league_data.teams[&self.home_team].fullname()));
+                self.ticker.push(format!("Message about {} Serving for the {}", league_data.players[&served_id].name, league_data.teams[&self.home_team].fullname()));
                 self.ball_in_home = !self.ball_in_home;
-                self.game_state = GameStates::play;
+                self.game_state = GameStates::Play;
             },
-            GameStates::play => {
+            GameStates::Play => {
                 // Which side of the team that hit, hit the ball
                 let left_or_right = rng.gen_range(0..100)%2 as usize;
                 // Which team hit the ball (away or home)
@@ -111,7 +111,7 @@ impl Game {
                                 self.game_score()));
                         }
                     } else {
-                        self.game_state = GameStates::ended;
+                        self.game_state = GameStates::Ended;
                         self.ticker.push(format!("Message about the game ending. The {} win! {}",
                             league_data.teams[hitting_team_id].fullname(),
                             self.game_score()));
@@ -121,7 +121,7 @@ impl Game {
 
                 self.ball_in_home = !self.ball_in_home;
             },
-            GameStates::ended => (),
+            GameStates::Ended => (),
         }
         &self.game_state
     }

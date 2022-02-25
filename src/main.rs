@@ -41,8 +41,8 @@ fn main() {
 
     loop {
         match game.tick(&mut league_data) {
-            GameStates::play | GameStates::serving => sleep(time::Duration::from_millis(1000)),
-            GameStates::ended => (),
+            GameStates::Play | GameStates::Serving => sleep(time::Duration::from_millis(1000)),
+            GameStates::Ended => (),
         }
     }
 }
