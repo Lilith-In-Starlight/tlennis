@@ -7,7 +7,7 @@ use core::time;
 use std::thread::sleep;
 
 // use console::Term;
-pub use game_data::Game;
+pub use game_data::{Game, GameStates};
 pub use league_info::*;
 pub use player_data::Player;
 pub use team_data::Team;
@@ -38,8 +38,11 @@ fn main() {
         ..Default::default()
     };
 
+
     loop {
-        game.tick(&mut league_data);
-        sleep(time::Duration::from_millis(2500));
+        match game.tick(&mut league_data) {
+            GameStates::play | GameStates::serving => sleep(time::Duration::from_millis(1000)),
+            GameStates::ended => (),
+        }
     }
 }
